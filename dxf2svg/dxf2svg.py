@@ -43,7 +43,7 @@ def outent(d, e, f, th):
         f(SVG_LINE.format(e.start[0], -e.start[1], e.end[0], -e.end[1], 
                           layercol.get(e.layer, 'black'), th))
     elif e.dxftype == "ARC":
-        f(SVG_PATH.format(arcpathstring(e), layercol.get(e.layer, 'black'), th))
+        f(SVG_PATH.format(arcpathstring(e), "", layercol.get(e.layer, 'black'), th))
     elif e.dxftype == "LWPOLYLINE":
         pth = "".join("%s%f %f" % ("M" if i==0 else "L", p[0], -p[1])  for i, p in enumerate(e.points))
         f(SVG_PATH.format(pth, ("Z" if e.is_closed else ""), layercol.get(e.layer, 'black'), th))
@@ -105,9 +105,6 @@ if __name__ == "__main__":
     d = dxfgrabber.readfile(options.dxf)
     svgcols = ['mediumorchid', 'lightgoldenrodyellow', 'saddlebrown', 'brown', 'honeydew', 'royalblue', 'steelblue', 'grey', 'darkgoldenrod', 'lavender', 'turquoise', 'cadetblue', 'lightslategray', 'maroon','palegoldenrod']
     layercol.update({k:v  for k, v in zip(d.layers.names(), svgcols)  if k not in layercol})
-
-    for e in d.entities:
-        print(e.name)
 
     fout = open(options.svg, "w")
     preamble(d, fout.write)
