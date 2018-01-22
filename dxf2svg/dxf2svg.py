@@ -69,7 +69,7 @@ def makesvgentitiesrecurse(entities, f):
             makesvgentitiesrecurse(list(d.blocks[e.name]), f)
             f("</g>\n")
         else:
-            outent(d, e, f, (3 if i != 8 else 13))
+            outent(d, e, f, 3)
     
 def makesvg():
     fout = open("test1.svg", "w")
@@ -103,7 +103,7 @@ if __name__ == "__main__":
         options.svg = re.sub("(?i)\.dxf$", "", options.dxf)+".svg"
     
     d = dxfgrabber.readfile(options.dxf)
-    svgcols = ['mediumorchid', 'brown', 'royalblue', 'steelblue', 'grey', 'darkgoldenrod', 'lavender', 'turquoise', 'cadetblue', 'lightslategray', 'honeydew', 'maroon','palegoldenrod']
+    svgcols = ['mediumorchid', 'brown', 'magenta', 'green', 'grey', 'darkgoldenrod', 'lavender', 'honeydew', 'royalblue', 'maroon','palegoldenrod']
     layercol.update({k:v  for k, v in zip(d.layers.names(), svgcols)  if k not in layercol})
 
     fout = open(options.svg, "w")
