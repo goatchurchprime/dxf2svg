@@ -58,13 +58,14 @@ def outent(d, e, f, th):
         print([e.dxftype])
     
         
-SVG_G = '<g transform="translate({0} {1})" stroke="{2}">\n'
+SVG_G = '<g transform="translate({translate[0]} {translate[1]}) rotate({rotate}) scale({scale[0]}, {scale[1]})" stroke="{stroke}">\n'
 def makesvgentitiesrecurse(entities, f):
     for i, e in enumerate(entities):
         if e.dxftype == "INSERT":
-            print(i, e, e.__dict__, "\n")
-            f(SVG_G.format(e.insert[0], e.insert[1], layercol.get(e.layer, 'black')))
-            assert e.scale[0] == 1 and e.scale[1] == 1
+            # need to flip the Y, and (not checked) I think the rotation is inverted as well
+            grec = SVG_G.format(translate=(e.insert[0], -e.insert[1]), rotate=-e.rotation, scale=e.scale, stroke=layercol.get(e.layer, 'black'))
+            print("blockscale", grec)
+            f(grec)
             makesvgentitiesrecurse(list(d.blocks[e.name]), f)
             f("</g>\n")
         else:
@@ -86,7 +87,6 @@ if __name__ == "__main__":
     parser.add_option("-d", "--dxf",        dest="dxf",        metavar="FILE",                    help="Input dxf file")
     parser.add_option("-s", "--svg",        dest="svg",        metavar="FILE",                    help="Output dxf file")
     parser.description = "Convert dxf to svg in a form that is going to be debuggable"
-    parser.epilog = "Best way to execute: dump3d yourcave.3d | ./parse3ddmp.py -s -r \n"
     
     # Code is here: https://bitbucket.org/goatchurch/survexprocessing
     options, args = parser.parse_args()
@@ -103,7 +103,7 @@ if __name__ == "__main__":
         options.svg = re.sub("(?i)\.dxf$", "", options.dxf)+".svg"
     
     d = dxfgrabber.readfile(options.dxf)
-    svgcols = ['mediumorchid', 'lightgoldenrodyellow', 'saddlebrown', 'brown', 'honeydew', 'royalblue', 'steelblue', 'grey', 'darkgoldenrod', 'lavender', 'turquoise', 'cadetblue', 'lightslategray', 'maroon','palegoldenrod']
+    svgcols = ['mediumorchid', 'brown', 'royalblue', 'steelblue', 'grey', 'darkgoldenrod', 'lavender', 'turquoise', 'cadetblue', 'lightslategray', 'honeydew', 'maroon','palegoldenrod']
     layercol.update({k:v  for k, v in zip(d.layers.names(), svgcols)  if k not in layercol})
 
     fout = open(options.svg, "w")
