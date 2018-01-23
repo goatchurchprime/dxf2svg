@@ -7,5 +7,5 @@ setup(name='dxf2svg',
       author_email='julian@goatchurch.org.uk',
       url='https://github.com/goatchurchprime/dxf2svg',
       packages=['dxf2svg'],
-      install_requires=["dxfgrabber", "NURBS-Python"]
+      install_requires=["dxfgrabber", "NURBS-Python=2.3.9"]
      )
