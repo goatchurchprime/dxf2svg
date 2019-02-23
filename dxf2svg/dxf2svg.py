@@ -17,6 +17,9 @@ def preamble(d, f):
         print("Need to convert units from", {1:"Inches", 2:"Feet", 5:"Centimeters" }.get(d.header['$INSUNITS'], ("unknown", d.header['$INSUNITS'])))
     if d.header['$DIMALTF'] != 1:
         print("Need to multiply out by scale factor", d.header['$DIMALTF'])
+    fac = d.header['$DIMALTF']
+    f('<g transform="scale(%f %f)">\n' % (fac, fac))
+    
 
 layercol= {"PLOT-LINES":"green", "PLOTLINES":"green", "CUT-LINE":"blue"}
 
@@ -47,8 +50,10 @@ def arcpathstring(e):
     while angdiff >= 360: angdiff -= 360
     while angdiff < 0:  angdiff += 360
     exfac = arcextrusionfac(e)
+    largearcflag = int(angdiff > 180)
+    sweepflag = 1 if exfac < 0 else 0
     return 'M {0} {1} A {2} {3} {4} {5} {6} {7} {8} '.format(x1*exfac, -y1, 
-            e.radius, e.radius, 0, int(angdiff > 180), 0, x2*exfac, -y2)
+            e.radius, e.radius, 0, largearcflag, sweepflag, x2*exfac, -y2)
 
 # https://www.autodesk.com/techpubs/autocad/acad2000/dxf/entities_section.htm
 SVG_LINE = '<line class="{layername}" x1="{0}" y1="{1}" x2="{2}" y2="{3}" stroke="{4}" stroke-width="{5:.2f}" />\n'
@@ -107,6 +112,7 @@ def makesvg():
     fout = open("test1.svg", "w")
     preamble(d, fout.write)
     makesvgentitiesrecurse(d, d.entities, fout.write)
+    fout.write("</g>\n")
     fout.write("</svg>\n")
     fout.close()
 
