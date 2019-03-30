@@ -15,9 +15,7 @@ def preamble(d, f):
     f(SVG_PREAMBLE.format(minX, -maxY, maxX - minX, maxY - minY))
     if d.header['$INSUNITS'] != 4:
         print("Need to convert units from", {1:"Inches", 2:"Feet", 5:"Centimeters" }.get(d.header['$INSUNITS'], ("unknown", d.header['$INSUNITS'])))
-    if d.header['$DIMALTF'] != 1:
-        print("Need to multiply out by scale factor", d.header['$DIMALTF'])
-    fac = d.header['$DIMALTF']
+    fac = 1.0
     f('<g transform="scale(%f %f)">\n' % (fac, fac))
     
 
