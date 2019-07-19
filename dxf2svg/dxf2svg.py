@@ -102,7 +102,7 @@ def makesvgentitiesrecurse(d, entities, fwrite, block):
             print("blockscale", grec)
             fwrite(grec)
             makesvgentitiesrecurse(d, list(d.blocks[e.name]), fwrite, e)
-            foutwrite("</g>\n")
+            fout.write("</g>\n")
         else:
             outent(e, fwrite, col, layername, 3)
     
@@ -148,6 +148,7 @@ if __name__ == "__main__":
     fout = open(options.svg, "w")
     preamble(d, fout.write)
     makesvgentitiesrecurse(d, d.entities, fout.write, None)
+    fout.write("</g>\n")
     fout.write("</svg>\n")
     fout.close()
     if unhandledentities:
